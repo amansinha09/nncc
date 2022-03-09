@@ -1,0 +1,12 @@
+README
+
+n2c2 Track 1: Contextualized Medication Event Extraction
+
+Contextualized Medication Event Dataset (CMED) 
+Diwakar Mahajan, Jennifer Liang and Ching-Huei Tsou - IBM Research
+
+The folder includes
+1. Trainingdata  folder containing annotations on 400 clinical notes split between train (350 notes) and dev (50 notes) datasets.
+2. CMED.pdf : CMED paper containing more information about the dataset - Mahajan D, Liang JJ, Tsou CH. Toward Understanding Clinical Context of Medication Change Event in Clinical Narratives. AMIA Annu Symp Proc. 2021. Forthcoming
+3. evaluation_script folder containing - 1) eval_script.py - evaluation script for the shared task.
+& 2)evaluation_readme.pdf - Readme for the evaluation script detailing its working, evaluation metrics for 3 different subtasks, and the 3 test releases and the corresponding primary evaluation metrics.
