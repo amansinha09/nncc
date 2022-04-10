@@ -1,3 +1,7 @@
+from nltk import wordpunct_tokenize
+import pandas as pd
+import numpy as np
+
 class DOCUMENT_DATA_EXTRACTOR():
     
     def __init__(self,PATH,name,tagging = "BIO2",default_open_saved_file_if_exists = True,default_save_read_file = True):
@@ -79,7 +83,7 @@ class DOCUMENT_DATA_EXTRACTOR():
 
             assert(len(txtspans) == 0 and ptr < len(spans))    
             
-            if tagging == "BIO2":
+            if self.tagging == "BIO2":
 
                 labels = np.zeros(len(spans),dtype = np.int8)
 
@@ -111,10 +115,14 @@ class DOCUMENT_DATA_EXTRACTOR():
                 temp = attributes[m]
                 for k in text_annotation_indices[entities[temp[1]][1]]:
                     attribute_labels[k][attribute_tags.index(temp[0])] = attr_types_tags[attribute_tags.index(temp[0])].index(temp[2])
-        retval = {"sentences":sentences,
-                  "labels":labels,
-                  "attribute_labels":attribute_labels,
-                  "tagging_scheme":{"label_tags":label_tags,"attribute_labels":attribute_labels,"attr_types_tags":attr_types_tags}}
+            retval = {"sentences":sentences,
+                      "spans":spans,
+                      "labels":labels,
+                      "attribute_labels":attribute_labels,
+                      "tagging_scheme":{"label_tags":label_tags,"attribute_labels":attribute_labels,"attr_types_tags":attr_types_tags}}
+        else:
+            retval = {"sentences":sentences,
+                      "spans":spans}
         if save_read_file or (save_read_file == None and self.default_save_read_file):
             globals()[self.name][path] = retval
         return retval
