@@ -88,6 +88,10 @@ class DOCUMENT_DATA_EXTRACTOR():
                 labels = np.zeros(len(spans),dtype = np.int8)
 
                 for i in entities:
+                    
+                    if np.any(np.logical_or(labels[text_annotation_indices[entities[i][1]]] == 1,labels[text_annotation_indices[entities[i][1]]] == 2)):
+                        continue
+                        
                     if entities[i][0] == "Disposition":
                         labels[text_annotation_indices[entities[i][1]]] = 1
                         for k in text_annotation_indices[entities[i][1]][1:]:
