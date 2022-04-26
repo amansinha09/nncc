@@ -14,7 +14,7 @@ class Contextual_Encodings_preprocessor():
         sentences = x
         repeats = np.zeros((len(sentences),),dtype = np.int64)
         for i in range(len(sentences)):
-            repeats[i] = tokenizer.tokenize(sentences[i]).__len__()
+            repeats[i] = self.tokenizer.tokenize(sentences[i]).__len__()
         temporary = np.arange(0,len(sentences),dtype = np.int64)
         segment_ids = np.repeat(temporary,repeats)
         tokens = tokenizer.encode(sentences,is_split_into_words = True)[1:-1]
