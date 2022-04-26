@@ -10,39 +10,34 @@ class Contextual_Encodings_preprocessor():
         self.context_length = context_length
         self.batch_size = batch_size
         
-    def __call__(self,x,training):
-        assert(training in [True,False]),"training can take only values [True,False]"
-        
-        if training == True:
-            return x
-        else :
-            sentences = x
-            repeats = np.zeros((len(sentences),),dtype = np.int64)
-            for i in range(len(sentences)):
-                repeats[i] = tokenizer.tokenize(sentences[i]).__len__()
-            temporary = np.arange(0,len(sentences),dtype = np.int64)
-            segment_ids = np.repeat(temporary,repeats)
-            tokens = tokenizer.encode(sentences,is_split_into_words = True)[1:-1]
-            assert(len(tokens) == len(segment_ids))
-            segment_ids = np.pad(np.array(segment_ids),pad_width = (self.context_length,self.context_length + (self.sentence_length - (len(sentences) % self.sentence_length)) % self.sentence_length),constant_values = -1)
-            tokens = np.pad(np.array(tokens),pad_width = (self.context_length,self.context_length + (self.sentence_length - (len(sentences) % self.sentence_length)) % self.sentence_length),constant_values = 0)   
-            cls_tk = [tokenizer.encode("[CLS]")[1]]
-            sep_tk = [tokenizer.encode("[SEP]")[1]]
-            tokens = np.array(tokens)
-            segment_ids = np.array(segment_ids)
-            _tokens = []
-            _segment_ids =  []
-            _attention_mask = []
-            for i in range((len(tokens)-2*self.context_length)//self.sentence_length):
-                temp_tk = np.concatenate([cls_tk,tokens[i*self.sentence_length:2*self.context_length+(i+1)*self.sentence_length],sep_tk],axis = 0)
-                temp_si = np.concatenate([[-1],segment_ids[i*self.sentence_length:2*self.context_length+(i+1)*self.sentence_length],[-1]],axis = 0)
-                _tokens.append(np.array(temp_tk,dtype = np.int64))
-                _segment_ids.append(np.array(temp_si,dtype = np.int64))
-                _attention_mask.append((temp_tk!=0).astype(np.int64))
-            data = torch.utils.data.TensorDataset(torch.tensor(_tokens),torch.tensor(_attention_mask))
-            
-            return {"dataloader":torch.utils.data.DataLoader(data,sampler = torch.utils.data.SequentialSampler(data),batch_size = self.batch_size),
-            "segment_ids":torch.tensor(_segment_ids)}
+    def __call__(self,x):
+        sentences = x
+        repeats = np.zeros((len(sentences),),dtype = np.int64)
+        for i in range(len(sentences)):
+            repeats[i] = tokenizer.tokenize(sentences[i]).__len__()
+        temporary = np.arange(0,len(sentences),dtype = np.int64)
+        segment_ids = np.repeat(temporary,repeats)
+        tokens = tokenizer.encode(sentences,is_split_into_words = True)[1:-1]
+        assert(len(tokens) == len(segment_ids))
+        segment_ids = np.pad(np.array(segment_ids),pad_width = (self.context_length,self.context_length + (self.sentence_length - (len(sentences) % self.sentence_length)) % self.sentence_length),constant_values = -1)
+        tokens = np.pad(np.array(tokens),pad_width = (self.context_length,self.context_length + (self.sentence_length - (len(sentences) % self.sentence_length)) % self.sentence_length),constant_values = 0)   
+        cls_tk = [tokenizer.encode("[CLS]")[1]]
+        sep_tk = [tokenizer.encode("[SEP]")[1]]
+        tokens = np.array(tokens)
+        segment_ids = np.array(segment_ids)
+        _tokens = []
+        _segment_ids =  []
+        _attention_mask = []
+        for i in range((len(tokens)-2*self.context_length)//self.sentence_length):
+            temp_tk = np.concatenate([cls_tk,tokens[i*self.sentence_length:2*self.context_length+(i+1)*self.sentence_length],sep_tk],axis = 0)
+            temp_si = np.concatenate([[-1],segment_ids[i*self.sentence_length:2*self.context_length+(i+1)*self.sentence_length],[-1]],axis = 0)
+            _tokens.append(np.array(temp_tk,dtype = np.int64))
+            _segment_ids.append(np.array(temp_si,dtype = np.int64))
+            _attention_mask.append((temp_tk!=0).astype(np.int64))
+        data = torch.utils.data.TensorDataset(torch.tensor(_tokens),torch.tensor(_attention_mask))
+
+        return {"dataloader":torch.utils.data.DataLoader(data,sampler = torch.utils.data.SequentialSampler(data),batch_size = self.batch_size),
+        "segment_ids":torch.tensor(_segment_ids)}
         
 class Contextual_Encodings_transformer(torch.nn.Module):
     
