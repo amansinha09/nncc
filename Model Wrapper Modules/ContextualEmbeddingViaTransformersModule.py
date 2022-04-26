@@ -99,7 +99,4 @@ class Contextual_Representations_Model(torch.nn.Module):
         out = self.preprocessor(x)
         y = self.transformer(out["dataloader"])
         retval = self.postprocessor(y,out["segment_ids"])
-        if len(retval)>1:
-            return retval[0]
-        else:
-            return retval
+        return retval
