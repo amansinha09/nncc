@@ -19,8 +19,8 @@ class Contextual_Encodings_preprocessor():
         segment_ids = np.repeat(temporary,repeats)
         tokens = tokenizer.encode(sentences,is_split_into_words = True)[1:-1]
         assert(len(tokens) == len(segment_ids))
-        segment_ids = np.pad(np.array(segment_ids),pad_width = (self.context_length,self.context_length + (self.sentence_length - (len(sentences) % self.sentence_length)) % self.sentence_length),constant_values = -1)
-        tokens = np.pad(np.array(tokens),pad_width = (self.context_length,self.context_length + (self.sentence_length - (len(sentences) % self.sentence_length)) % self.sentence_length),constant_values = 0)   
+        segment_ids = np.pad(np.array(segment_ids),pad_width = (self.context_length,self.context_length + (self.sentence_length - (len(tokens) % self.sentence_length)) % self.sentence_length),constant_values = -1)
+        tokens = np.pad(np.array(tokens),pad_width = (self.context_length,self.context_length + (self.sentence_length - (len(tokens) % self.sentence_length)) % self.sentence_length),constant_values = 0)   
         cls_tk = [tokenizer.encode("[CLS]")[1]]
         sep_tk = [tokenizer.encode("[SEP]")[1]]
         tokens = np.array(tokens)
