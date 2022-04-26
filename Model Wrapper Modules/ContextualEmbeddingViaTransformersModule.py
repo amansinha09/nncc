@@ -48,10 +48,12 @@ class Contextual_Encodings_transformer(torch.nn.Module):
         
     def forward(self,x):
         self.to(self.device)
+        output_list = []
         if self.training:
-            return self.transformer(x[0].to(self.device),attention_mask = x[1].to(self.device),token_type_ids = None).last_hidden_state
+            for tokens,attention_mask in x:
+                output_list.append(self.transformer(tokens.to(self.device),attention_mask = attention_mask.to(self.device),token_type_ids = None).last_hidden_state)
+            return torch.cat(output_list,axis = 0)
         else:
-            output_list = []
             with torch.no_grad():
                 for tokens,attention_mask in x:
                     output_list.append(self.transformer(tokens.to(self.device),attention_mask = attention_mask.to(self.device),token_type_ids = None).last_hidden_state)
@@ -94,7 +96,7 @@ class Contextual_Representations_Model(torch.nn.Module):
         self.postprocessor = Contextual_Encodings_postprocessor(sentence_length,context_length,train_time_merge_strategy,test_time_merge_strategy,with_cls_embeddings)
         
     def forward(self,x):
-        out = self.preprocessor(x,self.training)
+        out = self.preprocessor(x)
         y = self.transformer(out["dataloader"])
         retval = self.postprocessor(y,out["segment_ids"])
         if len(retval)>1:
