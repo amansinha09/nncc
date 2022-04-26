@@ -41,8 +41,12 @@ class DOCUMENT_DATA_EXTRACTOR():
         assert(len(sentences) == len(spans))
 
         if training == True:
-            df = pd.read_csv( path + '.ann', sep='^([^\s]*)\s', engine='python', header=None).drop(0, axis=1)
+            try:
+                df = pd.read_csv( path + '.ann', sep='^([^\s]*)\s', engine='python', header=None).drop(0, axis=1)    
+            except:
+                df = pd.DataFrame()
 
+            
             text_annotation = {}
             entities = {}
             attributes = {}
@@ -76,7 +80,11 @@ class DOCUMENT_DATA_EXTRACTOR():
                 if spans[ptr][0] >= txtspans[-1][0] and spans[ptr][1] <= txtspans[-1][1]:
 
                     if text_annotation_indices[txtspans[-1][2]].__len__() == 0:
-                        assert(txtspans[-1][0] == spans[ptr][0])
+                        try:
+                            assert(txtspans[-1][0] == spans[ptr][0])
+                        except:
+                            if ptr>0:
+                                text_annotation_indices[txtspans[-1][2]].append(ptr-1)
 
                     text_annotation_indices[txtspans[-1][2]].append(ptr)
                 ptr += 1
