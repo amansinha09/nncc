@@ -1,6 +1,6 @@
 class CMEE(torch.nn.Module):
     
-    def __init__(self,data_extractor,shared_model,head1,head2,head3,contextual_embeddings = None,word_embeddings = None,device = None):
+    def __init__(self,data_extractor,shared_model,head1,head2,contextual_embeddings = None,word_embeddings = None,device = None):
         super().__init__()
         assert(contextual_embeddings != None or word_embeddings != None)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu") if device == None else torch.device(device)
@@ -10,7 +10,6 @@ class CMEE(torch.nn.Module):
         self.model = shared_model.to(self.device)
         self.head1 = head1.to(self.device)
         self.head2 = head2.to(self.device)
-        self.head3 = head3.to(self.device)
         
     def forward(self,x):
         if self.training == False:
@@ -30,4 +29,4 @@ class CMEE(torch.nn.Module):
             o = e2
             
         y = self.model(o)
-        return (self.head1(y),self.head2(y),self.head3(y),x)
+        return (self.head1(y),self.head2(y),x)
