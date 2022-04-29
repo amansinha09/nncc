@@ -131,7 +131,7 @@ class DOCUMENT_DATA_EXTRACTOR():
                       "spans":spans,
                       "labels":labels,
                       "attribute_labels":attribute_labels,
-                      "tagging_scheme":{"label_tags":label_tags,"attribute_labels":attribute_labels,"attr_types_tags":attr_types_tags}}
+                      "tagging_scheme":{"label_tags":label_tags,"attribute_tags":attribute_tags,"attr_types_tags":attr_types_tags}}
         else:
             retval = {"sentences":sentences,
                       "spans":spans}
