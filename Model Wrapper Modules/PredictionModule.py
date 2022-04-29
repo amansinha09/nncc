@@ -42,13 +42,7 @@ class EstimateCMEE():
             
             entl = self.pred_fn(out1,out2,data)
             data["tagging_scheme"] = {}
-            data["tagging_scheme"]["attr_types_tags"] = [['Start',
-                                                          'Stop',
-                                                          'Increase',
-                                                          'Decrease',
-                                                          'OtherChange',
-                                                          'UniqueDose',
-                                                          'Unknown'],
+            data["tagging_scheme"]["attr_types_tags"] = [['Start', 'Stop', 'Increase', 'Decrease', 'OtherChange', 'UniqueDose', 'Unknown'],
                                                          ['Physician', 'Patient', 'Unknown'],
                                                          ['Certain', 'Hypothetical', 'Conditional', 'Unknown'],
                                                          ['Past', 'Present', 'Future', 'Unknown'],
