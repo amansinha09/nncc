@@ -1,3 +1,5 @@
+import numpy as np
+import torch
 from glob import glob
 import os
 from DataExtractionModule import DOCUMENT_DATA_EXTRACTOR
