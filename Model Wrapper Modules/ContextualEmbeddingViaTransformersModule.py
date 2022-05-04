@@ -69,8 +69,8 @@ class Contextual_Encodings_postprocessor(torch.nn.Module):
         assert(test_time_merge_strategy.lower() in ["min","max","mean"])
         assert(train_time_merge_strategy.lower() in ["min","max","mean"])
         self.merge_strategy = [test_time_merge_strategy.lower(),train_time_merge_strategy.lower()]
-        self.merge_fn = {"min":torch_scatter.scatter_min,
-                   "max":torch_scatter.scatter_max,
+        self.merge_fn = {"min":lambda x,ids,dim:torch_scatter.scatter_min(x,ids,dim)[0],
+                   "max":lambda x,ids,dim:torch_scatter.scatter_max(x,ids,dim)[0],
                    "mean":torch_scatter.scatter_mean}
         self.with_cls_embeddings = with_cls_embeddings
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
