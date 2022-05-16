@@ -69,6 +69,7 @@ class Contextual_Encodings_postprocessor(torch.nn.Module):
         assert(test_time_merge_strategy.lower() in ["min","max","mean"])
         assert(train_time_merge_strategy.lower() in ["min","max","mean"])
         self.merge_strategy = [test_time_merge_strategy.lower(),train_time_merge_strategy.lower()]
+
         self.merge_fn = {"min":lambda x,ids,dim:torch_scatter.scatter_min(x,ids,dim)[0],
                    "max":lambda x,ids,dim:torch_scatter.scatter_max(x,ids,dim)[0],
                    "mean":torch_scatter.scatter_mean}
@@ -87,10 +88,9 @@ class Contextual_Encodings_postprocessor(torch.nn.Module):
 
 class Contextual_Representations_Model(torch.nn.Module):
     
-    def __init__(self,transformer,tokenizer,sentence_length,context_length,batch_size,cls_tk,sep_tk,pad_tk,train_time_merge_strategy = "mean",test_time_merge_strategy = "mean",with_cls_embeddings = False):
+    def __init__(self,transformer,tokenizer,sentence_length,context_length,batch_size,cls_tk,sep_tk,pad_tk,train_time_merge_strategy = "mean",test_time_merge_strategy = "mean",with_cls_embeddings = True):
         super().__init__()
         assert(sentence_length>=3 and context_length>=0)
-        assert(sentence_length + 2 + 2 * context_length <= 512)
         
         self.preprocessor = Contextual_Encodings_preprocessor(tokenizer,sentence_length,context_length,batch_size,cls_tk,sep_tk,pad_tk)
         self.transformer = Contextual_Encodings_transformer(transformer)
