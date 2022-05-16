@@ -88,7 +88,7 @@ class Contextual_Encodings_postprocessor(torch.nn.Module):
 
 class Contextual_Representations_Model(torch.nn.Module):
     
-    def __init__(self,transformer,tokenizer,sentence_length,context_length,batch_size,cls_tk,sep_tk,pad_tk,train_time_merge_strategy = "mean",test_time_merge_strategy = "mean",with_cls_embeddings = True):
+    def __init__(self,transformer,tokenizer,sentence_length,context_length,batch_size,cls_tk,sep_tk,pad_tk,train_time_merge_strategy = "mean",test_time_merge_strategy = "mean",with_cls_embeddings = False):
         super().__init__()
         assert(sentence_length>=3 and context_length>=0)
         
