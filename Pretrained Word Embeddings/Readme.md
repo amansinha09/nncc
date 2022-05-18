@@ -5,4 +5,4 @@ Please Download the following necessary embedding files ( <400 MB): ( Inability 
 
 from https://www.kaggle.com/datasets/ayanvishwakarma/cmee-n2c2-harvard-modules
 
-Please take care to not change the names of the downloaded files as they are critical for the functioning of training.py.
+**Please take care to not change the names of the downloaded files as they are critical for the functioning of training.py.**
