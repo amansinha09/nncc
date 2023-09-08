@@ -27,8 +27,35 @@ from glob import glob
 
 import re
 
+##################################################
+#                    args reading
+##################################################
+parser = argparse.ArgumentParser()
+
+    ## Required parameters
+parser.add_argument("--train_dir",
+                        default=None,
+                        type=str,
+                        required=True,
+                        help="The training data dir. Should contain the .txt and .ann files for the tasks.")
+parser.add_argument("--valid_dir",
+                        default=None,
+                        type=str,
+                        required=True,
+                        help="The training data dir. Should contain the .txt and .ann files for the tasks.")
+parser.add_argument("--experiment_no",
+                        default='trial',
+                        type=str,
+                        required=True,
+                        help="name for the experiment to save things properly.")
 
 
+
+
+args = parser.parse_args()
+train_dir = args.train_dir #"../input/train"
+valid_dir = args.valid_dir #"../input/validation-data"
+exp_no = args.experiment_no
 #######################################################################################################
 #                    Contextual Embeddings using BERT with sliding window
 #######################################################################################################
@@ -70,10 +97,10 @@ train_sentence_length = 512
 sentence_offset = 256
 
 #######################################################################################################
-train_extr = DOCUMENT_DATA_EXTRACTOR("../input/train/",name = "train_extr",tagging = "BIO2",default_open_saved_file_if_exists = True,default_save_read_file = True)
+train_extr = DOCUMENT_DATA_EXTRACTOR(train_dir+'/',name = "train_extr",tagging = "BIO2",default_open_saved_file_if_exists = True,default_save_read_file = True)
 
 train_data = []
-for i in glob("../input/train/*"):
+for i in glob(train_dir+"/*"):
     if not i.endswith(".txt"):
         continue
     file_no = i.split("/")[-1].split(".")[0]
@@ -147,15 +174,39 @@ scheduler = get_linear_schedule_with_warmup(
     num_training_steps=total_steps
 )
 
+# uncomment to train the model
+'''
+
 if not os.path.isdir("./DEV_PREDICTIONS"):
     os.mkdir("./DEV_PREDICTIONS")
 if not os.path.isfile("./Saved_model.pt"):
     open("Saved_model.pt","w+")
     
 training_loop( cmee , train_data , epochs , LossCMEE(0.333,0.667,wCrossEntropyLoss()) , optimizer , scheduler ,
-              "../input/validation-data" , "./DEV_PREDICTIONS" , "./Saved_model.pt" , 1.0 , lambda : - get_score_fn_for_Task3("../input/validation-data" ,"./DEV_PREDICTIONS")(),20)
+              valid_dir , "./DEV_PREDICTIONS" , f"./Saved_model_{exp_no}.pt" , 1.0 , lambda : - get_score_fn_for_Task3(valid_dir ,"./DEV_PREDICTIONS")(),20)
 
+'''
 
+cmee.load_state_dict(torch.load(f"./Saved_model_{exp_no}.pt"))
+
+print("trained model loaded")
+print("performing final dev prediction")
 cmee.contextual_embeddings.postprocessor.merge_strategy = ["max","max"]
+# dev predictions
+if not os.path.isdir(f"./DEV_PREDICTIONS_{exp_no}"):
+    os.mkdir(f"./DEV_PREDICTIONS_{exp_no}")
 
+EstimateCMEE(valid_dir,f"./DEV_PREDICTIONS_{exp_no}")(cmee)
+main(valid_dir,f"./DEV_PREDICTIONS_{exp_no}",verbose = False)
+
+# test predictions
+
+print("performing final test prediction")
+
+
+if not os.path.isdir(f"./TEST_PREDICTIONS_{exp_no}"):
+    os.mkdir(f"./TEST_PREDICTIONS_{exp_no}")
+# we keep test data same
+EstimateCMEE("../input/test-data",f"./TEST_PREDICTIONS_{exp_no}")(cmee)
+main("../input/test-data","./TEST_PREDICTIONS_{exp_no}",verbose = False)
 

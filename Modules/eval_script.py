@@ -6,7 +6,7 @@ To run this file, please use:
 python <gold standard folder> <system output folder>
 
 e.g.: python gold_annotations system_annotations
-
+# python eval_script.py ../input/validation-data/ DEV_PREDICTIONS/
 Please note that you must use Python 3 to get the correct results with this script
 
 

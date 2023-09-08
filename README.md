@@ -18,3 +18,9 @@ Please make sure that the Word Embeddings are downloaded (manually) in the Pretr
 python PATH_TO_training.py --train_dir PATH_TO_TRAIN_FOLDER --valid_dir  PATH_TO_DEV_FOLDER --output_folder  PATH_TO_SYSTEM_OUTPUT_FOLDER --save_path PATH_TO_save_model.pt --head [linear|linear_lstm] --on_task [task_1|task_2]
 
 ```
+
+**Evaluation**
+
+```
+python PATH_TO_eval_script.py PATH_TO_GOLD_FOLDER PATH_TO_PRED_FOLDER
+```
